@@ -14,6 +14,7 @@ function createWindow() {
         }
         win = null
     })
+
 }
 
 function buildMenu() {
@@ -27,7 +28,8 @@ function buildMenu() {
             { label: "Copy", accelerator: "CmdOrCtrl+C", selector: "copy:" },
             { label: "Paste", accelerator: "CmdOrCtrl+V", selector: "paste:" },
             { label: "Select All", accelerator: "CmdOrCtrl+A", selector: "selectAll:" }
-        ]}]
+        ]
+    }]
     if (process.platform === "darwin") {
         template.unshift({
             label: app.getName(),
@@ -41,7 +43,8 @@ function buildMenu() {
                     click: showSetting
                 },
                 {
-                    role: 'close'
+                    role: 'close',
+                    accelerator: "Cmd+Q"
                 }
             ]
         })
@@ -90,3 +93,7 @@ ipcMain.on("asynchronous-message", (event, arg) => {
 })
 
 app.on('ready', createWindow)
+
+app.on('window-all-closed', () => {
+    app.quit();
+});
