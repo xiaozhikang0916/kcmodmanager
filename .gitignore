@@ -1,0 +1,7 @@
+/mods
+/extract
+/node_modules
+/release-builds
+/.vscode
+package-lock.json
+modconfig.json
