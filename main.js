@@ -1,6 +1,7 @@
 const { app, BrowserWindow, Menu, ipcMain } = require('electron')
 
 let win
+let setting
 
 function createWindow() {
     win = new BrowserWindow({ width: 300, height: 600 })
