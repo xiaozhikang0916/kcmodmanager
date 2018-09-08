@@ -5,17 +5,17 @@
   "main": "main.js",
   "scripts": {
     "test": "electron . --debug-brk=9223",
-    "package-mac": "electron-packager . --overwrite --platform=darwin --arch=x64 --prune=true --out=release-builds --ignore='/.vscode|extract|mods|modconfig'",
-    "package-win": "electron-packager . electron-tutorial-app --overwrite --platform=win32 --arch=ia32 --prune=true --out=release-builds --ignore='/.vscode|extract|mods|modconfig' --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName=\"KCMonManager\"",
-    "package-linux": "electron-packager . electron-tutorial-app --overwrite --platform=linux --arch=x64 --prune=true --out=release-builds --ignore='/.vscode|extract|mods|modconfig'"
+    "package-mac": "electron-packager . --overwrite --platform=darwin --arch=x64 --prune=true --out=release-builds --ignore='vscode|modconfig'",
+    "package-win": "electron-packager . --overwrite --platform=win32 --arch=ia32 --prune=true --out=release-builds --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName=\"KCModManager\"",
+    "package-linux": "electron-packager . --overwrite --platform=linux --arch=x64 --prune=true --out=release-builds --ignore='vscode|modconfig'"
   },
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "electron": "^2.0.8",
     "jszip": "^3.1.5"
   },
   "devDependencies": {
-    "electron": "^2.0.8",
-    "electron-packager": "^8.7.2"
+    "electron-packager": "^12.1.0"
   }
 }
