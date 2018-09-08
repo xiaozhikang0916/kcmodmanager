@@ -67,7 +67,7 @@ function buildMenu() {
 }
 
 function showSetting(menuItem, browserWindow, event) {
-    setting = new BrowserWindow({ width: 300, height: 300 })
+    setting = new BrowserWindow({ width: 500, height: 300 })
     setting.loadFile('settings.html')
     setting.on('closed', () => {
         setting = null
