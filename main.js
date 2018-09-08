@@ -58,7 +58,7 @@ function buildMenu() {
                     click: showSetting
                 },
                 {
-                    role: close
+                    role: 'close'
                 }
             ]
         })
