@@ -56,6 +56,13 @@ Open this app, complete the setting window if it is first time to start.
 
 Close setting window to save.
 
+## TOLO LIST
+
+* Save the modified files list to config of each mod package
+  * Handle the situation if two mods are modifying the same resource file
+* Support a `README` file in zip to display some instruction
+* Improve the UI
+
 ## LICENCE
 
 Under licence [MIT](./LICENCE)
