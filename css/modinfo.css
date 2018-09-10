@@ -1,0 +1,12 @@
+.mod_page {
+    background-color: white;
+}
+
+.info_page {
+    transition-duration: 0.3s;
+    visibility: hidden;
+}
+
+.info_page.shown {
+    visibility: visible;
+}

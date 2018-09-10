@@ -1,9 +1,10 @@
 <!DOCTYPE html>
   <html>
     <head>
-      <link rel="stylesheet" href="./css/variables.css">
+      <link rel="stylesheet" href="./css/html.css">
       <link rel="stylesheet" href="./css/nav.css">
       <link rel="stylesheet" href="./css/moditem.css">
+      <link rel="import" href="./modinfo.html">
       <meta charset="UTF-8">
       <title>KCModManager</title>
     </head>
@@ -12,9 +13,23 @@
           <nav id="mod_list" class="nav"></nav>
           <div id="settings">设置</div>
       </div>
-      <iframe id="mod_info"></iframe>
+      <main id="mod_info"></main>
+      <template>
+        <div class="info_page">
+            <div class="info_section">
+                <img class="icon">
+                <div class="info">
+                    <p class="title"></p>
+                    <p class="author"></p>
+                    <p class="tags"></p>
+                </div>
+                <div class="modbutton"></div>
+            </div>
+            <div class="readme_section"></div></div>
+    </template>
       <script src="./scripts/config.js"></script>
       <script src="./scripts/installmod.js"></script>
+      <script src="./scripts/modinfo.js"></script>
       <script src="./scripts/getmodlist.js"></script>
     </body>
   </html>

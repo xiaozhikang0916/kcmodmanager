@@ -1,14 +1,5 @@
 /* Nav */
 
-html {
-  height:100%;
-}
-body {
-  background: #F4F4F4;
-  height: 100%;
-  margin: 0px;
-}
-
 #side {
   float: left;
   width: 300px;

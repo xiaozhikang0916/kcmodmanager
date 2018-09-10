@@ -4,7 +4,9 @@ path = require('path')
 var querystring = require("querystring");
 const { ipcRenderer } = require('electron')
 var content = document.getElementById("mod_list")
-var infoFrame = document.getElementById("mod_info")
+var mainPage = document.getElementById("mod_info")
+const template = document.querySelector('template')
+const pageNode = document.importNode(template.content, true)
 
 function addModToList(modFile) {
     let element = document.createElement("div")
@@ -25,7 +27,8 @@ function addModToList(modFile) {
     element.addEventListener('click', (ev) => {
         resetSelectedMod()
         element.classList.add('selected')
-        infoFrame.src = ("./modinfo.html?" + querystring.stringify({mod: name}))
+        let page = document.getElementById(`mod_info_${name}`)
+        page.classList.add("shown")
     })
     let text = document.createElement("p")
     text.classList.add("modname")
@@ -35,7 +38,7 @@ function addModToList(modFile) {
     it would make ui flashing*/
     text.textContent = name
     element.appendChild(text)
-    element.appendChild(generateButton(name, installed))
+    // element.appendChild(generateButton(name, installed))
     readModInfo(name, modFile)
     content.append(element)
 }
@@ -46,6 +49,7 @@ const INFO_LIST = [
     /icon\.*/,
     /readme\//
 ]
+
 function readModInfo(name, modFile) {
     const infoPath = path.join(getModPath(), ".modinfo", name)
     fs.readFile(modFile, function (err, data) {
@@ -56,7 +60,7 @@ function readModInfo(name, modFile) {
             zip.loadAsync(data)
                 .then(function (file) {
                     file.forEach(function (relativePath, entry) {
-                        if (relativePath.startsWith("kcs2") && !entry.dir) {
+                        if (!relativePath.startsWith("kcs2") && !entry.dir) {
                             INFO_LIST.forEach((item) => {
                                 if (relativePath.search(item) > -1) {
                                     entry.async('nodebuffer').then(function (filecontent) {
@@ -65,6 +69,9 @@ function readModInfo(name, modFile) {
                                             mkDirByPathSync(path.join(infoPath, dir))
                                         }
                                         fs.writeFileSync(path.join(infoPath, relativePath), filecontent)
+                                        let page = buildInfoPage(name, pageNode.cloneNode(true))
+                                        mainPage.appendChild(page)
+                                        
                                     })
                                 }
                             })
@@ -84,27 +91,11 @@ function resetSelectedMod() {
     sections.forEach((section) => {
       section.classList.remove('selected')
     })
-}
 
-function generateButton(modfile, installed) {
-    let element = document.createElement("div")
-    element.classList.add("modbutton")
-    if (installed) {
-        element.classList.add("installed")
-    }
-    else {
-        element.classList.remove("installed")
-    }
-    element.addEventListener("click", function (e, ev) {
-        if (isModInstalled(modfile)) {
-            uninstallMod(modfile)
-            element.classList.remove("installed")
-        } else {
-            installMod(modfile)
-            element.classList.add("installed")
-        }
+    const pages = document.querySelectorAll('.info_section.shown')
+    pages.forEach((page) => {
+        page.classList.remove('shown')
     })
-    return element
 }
 
 function createPage() {
