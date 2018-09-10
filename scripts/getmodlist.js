@@ -1,12 +1,19 @@
 zip = require('jszip')
 fs = require('fs')
 path = require('path')
+var querystring = require("querystring");
 const { ipcRenderer } = require('electron')
 var content = document.getElementById("mod_list")
+var infoFrame = document.getElementById("mod_info")
 
 function addModToList(modFile) {
     let element = document.createElement("div")
-    let name = path.basename(modFile)
+    let basename = path.basename(modFile)
+    var index = basename.lastIndexOf('.')
+    let name = basename
+    if (index > 0) {
+        name = basename.substring(0, index)
+    }
     element.id = name
     element.classList.add("moditem")
     let installed = isModInstalled(name)
@@ -18,6 +25,7 @@ function addModToList(modFile) {
     element.addEventListener('click', (ev) => {
         resetSelectedMod()
         element.classList.add('selected')
+        infoFrame.src = ("./modinfo.html?" + querystring.stringify({mod: name}))
     })
     let text = document.createElement("p")
     text.classList.add("modname")
@@ -38,13 +46,8 @@ const INFO_LIST = [
     /icon\.*/,
     /readme\//
 ]
-function readModInfo(basename, modFile) {
-    var index = basename.lastIndexOf('.')
-    var dirname = basename
-    if (index > 0) {
-        dirname = basename.substring(0, index)
-    }
-    const infoPath = path.join(getModPath(), ".modinfo", dirname)
+function readModInfo(name, modFile) {
+    const infoPath = path.join(getModPath(), ".modinfo", name)
     fs.readFile(modFile, function (err, data) {
         if (err) {
             console.log("Read zip failed")
@@ -53,15 +56,15 @@ function readModInfo(basename, modFile) {
             zip.loadAsync(data)
                 .then(function (file) {
                     file.forEach(function (relativePath, entry) {
-                        if (!entry.dir) {
+                        if (relativePath.startsWith("kcs2") && !entry.dir) {
                             INFO_LIST.forEach((item) => {
-                                if (entry.name.search(item) > -1) {
+                                if (relativePath.search(item) > -1) {
                                     entry.async('nodebuffer').then(function (filecontent) {
-                                        var dir = path.parse(entry.name).dir
+                                        var dir = path.parse(relativePath).dir
                                         if (!fs.existsSync(dir)) {
                                             mkDirByPathSync(path.join(infoPath, dir))
                                         }
-                                        fs.writeFileSync(path.join(infoPath, entry.name), filecontent)
+                                        fs.writeFileSync(path.join(infoPath, relativePath), filecontent)
                                     })
                                 }
                             })

@@ -8,10 +8,11 @@
     border-bottom: 1px solid #E7E7E7;
     overflow: auto;
     padding: 5px 0px 5px 0px;
+    transition-duration: 0.3s;
 }
 
 .moditem.selected {
-    background-color: #FB7299
+    background-color: #FFFFFF;
 }
 
 .modbutton {

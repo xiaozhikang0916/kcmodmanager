@@ -4,7 +4,7 @@ let win
 let setting
 
 function createWindow() {
-    win = new BrowserWindow({ width: 300, height: 600 })
+    win = new BrowserWindow({ width: 800, height: 600 })
     win.loadFile('index.html')
     buildMenu()
     win.on('closed', () => {
@@ -36,7 +36,8 @@ function buildMenu() {
             submenu: [
                 {
                     label: "打开开发者工具",
-                    click: showDevTool
+                    click: showDevTool,
+                    accelerator: "F2"
                 },
                 {
                     label: "设置",

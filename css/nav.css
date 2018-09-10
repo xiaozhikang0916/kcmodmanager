@@ -10,11 +10,11 @@ body {
 }
 
 #side {
-  width: 100%;
+  float: left;
+  width: 300px;
   height: 100%;
   overflow-x: hidden;
   overflow-y: hidden;
-  background-color: #FFFFFF;
 }
 
 .nav {
@@ -33,4 +33,11 @@ body {
   position: relative;
   bottom: 0;
   border-top: 1px solid #CCCCCC;
+}
+
+#mod_info {
+  float: right;
+  height: 100%;
+  width: calc(100% - 300px);
+  border: none;
 }
