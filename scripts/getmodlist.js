@@ -46,6 +46,10 @@ function generateButton(modfile, installed) {
 }
 
 function createPage() {
+    var setting = document.getElementById("settings")
+    setting.addEventListener('click', (ev) => {
+        ipcRenderer.send('asynchronous-message', "open-settings")
+    })
     if (!validConfig()) {
         console.log("Setting invalid!")
         ipcRenderer.send('asynchronous-message', "open-settings")
