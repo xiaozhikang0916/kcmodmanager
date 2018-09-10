@@ -1,4 +1,6 @@
 .setting_input {
+    position: relative;
+    width: calc(100% - 150px);
     float: right;
 }
 
