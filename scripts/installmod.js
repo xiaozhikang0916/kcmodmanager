@@ -24,7 +24,7 @@ function extractZip(zipFile, outputPath) {
                         if (!entry.dir) {
                             entry.async('nodebuffer').then(function (filecontent) {
                                 var dir = path.parse(entry.name).dir
-                                if (!fs.existsSync(dir)) {
+                                if (!fs.existsSync(path.join(outputPath, dir))) {
                                     mkDirByPathSync(path.join(outputPath, dir))
                                 }
                                 fs.writeFileSync(formatFileName(entry.name, outputPath), filecontent)
