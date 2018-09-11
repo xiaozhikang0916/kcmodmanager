@@ -7,6 +7,7 @@ var content = document.getElementById("mod_list")
 var mainPage = document.getElementById("mod_info")
 const template = document.querySelector('template')
 const pageNode = document.importNode(template.content, true)
+const config = new Config(ipcRenderer.sendSync('get-setting'))
 
 function addModToList(modFile) {
     let element = document.createElement("div")
@@ -18,7 +19,7 @@ function addModToList(modFile) {
     }
     element.id = name
     element.classList.add("moditem")
-    let installed = isModInstalled(name)
+    let installed = config.isModInstalled(name)
     if (installed) {
         element.classList.add("installed")
     } else {
@@ -44,7 +45,7 @@ function addModToList(modFile) {
 }
 
 function readModInfo(name, modFile) {
-    const infoPath = path.join(getModPath(), ".modinfo", name)
+    const infoPath = path.join(config.getModPath(), ".modinfo", name)
     fs.readFile(modFile, function (err, data) {
         if (err) {
             console.log("Read zip failed")
@@ -94,7 +95,7 @@ function createPage() {
     setting.addEventListener('click', (ev) => {
         ipcRenderer.send('asynchronous-message', "open-settings")
     })
-    if (!validConfig()) {
+    if (!config.validConfig()) {
         console.log("Setting invalid!")
         ipcRenderer.send('asynchronous-message', "open-settings")
     } else {
@@ -104,11 +105,11 @@ function createPage() {
 }
 
 function loadMods() {
-    fs.readdir(getModPath(), function (err, fileList) {
+    fs.readdir(config.getModPath(), function (err, fileList) {
         if (err) return err;
         fileList.forEach(function (file) {
             if (file.endsWith(".zip")) {
-                file = path.resolve(getModPath(), file)
+                file = path.resolve(config.getModPath(), file)
                 fs.stat(file, function (err, stat) {
                     if (stat && stat.isFile()) {
                         addModToList(file)

@@ -8,22 +8,25 @@ const INFO_LIST = [
 ]
 
 function buildInfoPage(modName, template) {
+    const infoJsonPath = path.join(config.getModPath(), ".modinfo", modName, "info.json")
+    const iconPath = path.join(config.getModPath(), ".modinfo", modName, "icon.png")
+    const readmePath = path.join(config.getModPath(), ".modinfo", modName, "readme.md")
     var icon = template.querySelector(".icon")
     var title = template.querySelector(".title")
     var author = template.querySelector(".author")
     var tags = template.querySelector(".tags")
     var button = template.querySelector(".modbutton")
-    if (fs.existsSync(path.join(getModPath(), ".modinfo", modName, "info.json"))) {
-        var modInfo = JSON.parse(fs.readFileSync(path.join(getModPath(), ".modinfo", modName, "info.json"), 'utf8'))
+    if (fs.existsSync(infoJsonPath)) {
+        var modInfo = JSON.parse(fs.readFileSync(infoJsonPath, 'utf8'))
         icon.style.display = "block"
-        icon.src = path.join(getModPath(), ".modinfo", modName, "icon.png")
+        icon.src = iconPath
         title.textContent = modInfo.name
         author.textContent = modInfo.author
         tags.textContent = modInfo.tags.join(',')
         template.querySelector(".readme_section").innerHTML = marked.parse(
-            fs.readFileSync(path.join(getModPath(), ".modinfo", modName, "readme.md"), 'utf8'),
+            fs.readFileSync(readmePath, 'utf8'),
             {
-                baseUrl: path.join(getModPath(), ".modinfo", modName, './'),
+                baseUrl: path.join(config.getModPath(), ".modinfo", modName, './'),
                 gfm: true
             }
         )
@@ -31,7 +34,7 @@ function buildInfoPage(modName, template) {
         title.textContent = modName
         icon.style.display = "none"
     }
-    generateButton(button, modName, isModInstalled(modName))
+    generateButton(button, modName, config.isModInstalled(modName))
     template.firstElementChild.id = `mod_info_${modName}`
     return template
 }
@@ -44,11 +47,11 @@ function generateButton(element, modfile, installed) {
         element.classList.remove("installed")
     }
     element.addEventListener("click", function (e, ev) {
-        if (isModInstalled(modfile)) {
+        if (config.isModInstalled(modfile)) {
             uninstallMod(modfile)
             element.classList.remove("installed")
         } else {
-            installMod(modfile)
+            config.installMod(modfile)
             element.classList.add("installed")
         }
     })

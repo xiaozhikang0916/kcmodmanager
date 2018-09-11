@@ -1,106 +1,154 @@
 fs = require("fs")
 path = require("path")
-const CONFIG_PATH = path.join(__dirname, "modconfig.json")
-var MOD_CONFIG
+const app = require('electron')
 
-function loadConfig() {
-    console.log("Config read: path " + CONFIG_PATH)
-    if (!fs.existsSync(CONFIG_PATH)) {
-        fs.writeFileSync(CONFIG_PATH, "{}")
-    }
-    MOD_CONFIG = JSON.parse(fs.readFileSync(CONFIG_PATH, 'utf8'))
-
-}
-
-function saveConfig() {
-    if (!MOD_CONFIG.installed_mod) {
-        MOD_CONFIG.installed_mod = []
-    }
-    fs.writeFileSync(CONFIG_PATH, JSON.stringify(MOD_CONFIG, null, 4), 'utf8')
-}
-
-function validConfig() {
-    loadConfig()
-    return !(MOD_CONFIG.name_format === undefined || MOD_CONFIG.name_format == ''
-        || MOD_CONFIG.extract_path === undefined || MOD_CONFIG.extract_path == ''
-        || MOD_CONFIG.mod_path === undefined || MOD_CONFIG.mod_path == '')
-}
-
-function getModPath() {
-    return MOD_CONFIG.mod_path
-}
-
-function setModPath(path) {
-    MOD_CONFIG.mod_path = path
-}
-
-function getNameFormat() {
-    return MOD_CONFIG.name_format
-}
-
-function setNameFormat(name) {
-    MOD_CONFIG.name_format = name
-}
-
-function getExtractPath() {
-    return MOD_CONFIG.extract_path
-}
-
-function setExtractPath(path) {
-    MOD_CONFIG.extract_path = path
-}
-
-function formatFileName(originName, relativePath = "") {
-    var originPath = path.join(relativePath, originName)
-    var name = path.basename(originPath)
-    var extIndex = name.lastIndexOf('.')
-    if (extIndex > 0) {
-        var base = name.substring(0, extIndex)
-        var ext = name.substring(extIndex + 1, name.length)
-
-        var nname = getNameFormat().replace("\{name\}", base).replace("\{ext\}", ext)
-        return path.join(originPath.substring(0, originPath.length - name.length), nname)
-    } else {
-        return originPath
-    }
-}
-
-function isModInstalled(modName) {
-    let result = false
-    MOD_CONFIG.installed_mod.forEach(function (item, index, array) {
-        if (item == modName) {
-            return result = true
+class Config {
+    constructor(datapath) {
+        if (typeof datapath == 'string') {
+            this.path = path.join(datapath, 'modconfig.json')
+            this.loadConfig()
+        } else {
+            this.path = datapath.path
+            if (datapath.name_format) {
+                this.name_format = datapath.name_format
+            } else {
+                this.name_format = ''
+            }
+            if (datapath.extract_path) {
+                this.extract_path = datapath.extract_path
+            } else {
+                this.extract_path = ''
+            }
+            if (datapath.mod_path) {
+                this.mod_path = datapath.mod_path
+            } else {
+                this.mod_path = ''
+            }
+            if (datapath.installed_mod) {
+                this.installed_mod = datapath.installed_mod
+            } else {
+                this.installed_mod = []
+            }
         }
-    })
-    return result;
-}
-
-function saveInstallMod(modName) {
-    if (MOD_CONFIG.installed_mod === undefined) {
-        MOD_CONFIG.installed_mod = []
     }
-    MOD_CONFIG.installed_mod.forEach(function (item, index, array) {
-        if (item == modName) {
-            MOD_CONFIG.installed_mod.splice(index, 1)
-        }
-    })
-    MOD_CONFIG.installed_mod.push(modName)
-    saveConfig()
-}
 
-function deleteInstalledMod(modName) {
-    if (MOD_CONFIG.installed_mod === undefined) {
-        return false;
+    loadConfig() {
+        console.log("Config read: path ")
+        if (!fs.existsSync(this.path)) {
+            fs.writeFileSync(this.path, "{}")
+        }
+        var tmp = JSON.parse(fs.readFileSync(this.path, 'utf8'))
+        if (tmp.name_format) {
+            this.name_format = tmp.name_format
+        } else {
+            this.name_format = ''
+        }
+        if (tmp.extract_path) {
+            this.extract_path = tmp.extract_path
+        } else {
+            this.extract_path = ''
+        }
+        if (tmp.mod_path) {
+            this.mod_path = tmp.mod_path
+        } else {
+            this.mod_path = ''
+        }
+        if (tmp.installed_mod) {
+            this.installed_mod = tmp.installed_mod
+        } else {
+            this.installed_mod = []
+        }
     }
-    let result = false
-    MOD_CONFIG.installed_mod.forEach(function (item, index, array) {
-        if (item == modName) {
-            MOD_CONFIG.installed_mod.splice(index, 1)
-            result = true
+
+    saveConfig() {
+        if (!this.installed_mod) {
+            this.installed_mod = []
         }
-    })
-    saveConfig()
-    return result;
+        fs.writeFileSync(this.path, JSON.stringify(this, null, 4), 'utf8')
+    }
+
+    validConfig() {
+        return !(this.name_format === undefined || this.name_format == ''
+            || this.extract_path === undefined || this.extract_path == ''
+            || this.mod_path === undefined || this.mod_path == '')
+    }
+
+    getModPath() {
+        return this.mod_path
+    }
+
+    setModPath(path) {
+        this.mod_path = path
+    }
+
+    getNameFormat() {
+        return this.name_format
+    }
+
+    setNameFormat(name) {
+        this.name_format = name
+    }
+
+    getExtractPath() {
+        return this.extract_path
+    }
+
+    setExtractPath(path) {
+        this.extract_path = path
+    }
+
+    formatFileName(originName, relativePath = "") {
+        var originPath = path.join(relativePath, originName)
+        var name = path.basename(originPath)
+        var extIndex = name.lastIndexOf('.')
+        if (extIndex > 0) {
+            var base = name.substring(0, extIndex)
+            var ext = name.substring(extIndex + 1, name.length)
+
+            var nname = getNameFormat().replace("\{name\}", base).replace("\{ext\}", ext)
+            return path.join(originPath.substring(0, originPath.length - name.length), nname)
+        } else {
+            return originPath
+        }
+    }
+
+    isModInstalled(modName) {
+        let result = false
+        this.installed_mod.forEach(function (item, index, array) {
+            if (item == modName) {
+                return result = true
+            }
+        })
+        return result;
+    }
+
+    saveInstallMod(modName) {
+        if (this.installed_mod === undefined) {
+            this.installed_mod = []
+        }
+        this.installed_mod.forEach(function (item, index, array) {
+            if (item == modName) {
+                this.installed_mod.splice(index, 1)
+            }
+        })
+        this.installed_mod.push(modName)
+        saveConfig()
+    }
+
+    deleteInstalledMod(modName) {
+        if (this.installed_mod === undefined) {
+            return false;
+        }
+        let result = false
+        this.installed_mod.forEach(function (item, index, array) {
+            if (item == modName) {
+                this.installed_mod.splice(index, 1)
+                result = true
+            }
+        })
+        saveConfig()
+        return result;
+    }
 }
 
-loadConfig()
+module.exports = Config

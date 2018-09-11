@@ -1,34 +1,37 @@
 var modPath = document.getElementById('mod_path_edit')
 var outputPath = document.getElementById('output_path_edit')
 var nameFormat = document.getElementById('name_fmt_edit')
+const { ipcRenderer } = require('electron')
 
-if (getModPath()) {
-    modPath.value = getModPath()
+const config = new Config(ipcRenderer.sendSync('get-setting'))
+
+if (config.getModPath()) {
+    modPath.value = config.getModPath()
 }
 
-if (getExtractPath()) {
-    outputPath.value = getExtractPath()
+if (config.getExtractPath()) {
+    outputPath.value = config.getExtractPath()
 }
 
-if (getNameFormat()) {
-    nameFormat.value = getNameFormat()
+if (config.getNameFormat()) {
+    nameFormat.value = config.getNameFormat()
 } else {
     nameFormat.value = "{name}.hack.{ext}"
-    setNameFormat(nameFormat.value)
+    config.setNameFormat(nameFormat.value)
 }
 
 modPath.oninput = function(ev) {
-    setModPath(modPath.value)
+    config.setModPath(modPath.value)
 }
 
 outputPath.oninput = function(ev) {
-    setExtractPath(outputPath.value)
+    config.setExtractPath(outputPath.value)
 } 
 
 nameFormat.oninput = function(ev) {
-    setNameFormat(nameFormat.value)
+    config.setNameFormat(nameFormat.value)
 }
 
 window.onbeforeunload = function() {
-    saveConfig()
+    ipcRenderer.sendSync("save-setting", config)
 }

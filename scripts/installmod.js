@@ -4,18 +4,18 @@ path = require("path")
 
 function installMod(modName) {
     var zipName = modName + '.zip'
-    extractZip(zipName, getExtractPath())
+    extractZip(zipName, config.getExtractPath())
     saveInstallMod(modName)
 }
 
 function uninstallMod(modName) {
     var zipName = modName + '.zip'
-    deleteFileFromZip(zipName, getExtractPath())
+    deleteFileFromZip(zipName, config.getExtractPath())
     deleteInstalledMod(modName)
 }
 
 function extractZip(zipFile, outputPath) {
-    fs.readFile(path.join(getModPath(), zipFile), function (err, data) {
+    fs.readFile(path.join(config.getModPath(), zipFile), function (err, data) {
         if (err) {
             console.log("Read zip failed")
         }
@@ -29,7 +29,7 @@ function extractZip(zipFile, outputPath) {
                                 if (!fs.existsSync(path.join(outputPath, dir))) {
                                     mkDirByPathSync(path.join(outputPath, dir))
                                 }
-                                fs.writeFileSync(formatFileName(entry.name, outputPath), filecontent)
+                                fs.writeFileSync(config.formatFileName(entry.name, outputPath), filecontent)
                             })
                         }
                     })
@@ -42,7 +42,7 @@ function extractZip(zipFile, outputPath) {
 }
 
 function deleteFileFromZip(zipFile, outputPath) {
-    fs.readFile(path.join(getModPath(), zipFile), function (err, data) {
+    fs.readFile(path.join(config.getModPath(), zipFile), function (err, data) {
         if (err) {
             console.log("Read zip failed")
         }
@@ -51,7 +51,7 @@ function deleteFileFromZip(zipFile, outputPath) {
                 .then(function (file) {
                     file.forEach(function (relativePath, entry) {
                         if (!entry.dir) {
-                            let modFile = formatFileName(entry.name, outputPath)
+                            let modFile = config.formatFileName(entry.name, outputPath)
                             fs.stat(modFile, function (err, stat) {
                                 if (err) {
                                     return console.error(err);

@@ -1,7 +1,10 @@
 const { app, BrowserWindow, Menu, ipcMain } = require('electron')
+const path = require('path')
+const Config = require('./scripts/config')
 
 let win
 let setting
+let config = new Config(path.join(app.getPath('appData'), 'kcmodmanager'))
 
 function createWindow() {
     win = new BrowserWindow({ width: 1200, height: 600 })
@@ -44,7 +47,7 @@ function buildMenu() {
                     click: showSetting
                 },
                 {
-                    role: 'close',
+                    role: 'quit',
                     accelerator: "Cmd+Q"
                 }
             ]
@@ -91,6 +94,15 @@ ipcMain.on("asynchronous-message", (event, arg) => {
     if (arg == "open-settings") {
         showSetting(null, null, null)
     }
+})
+
+ipcMain.on("get-setting", (event, arg) => {
+    event.returnValue = config
+})
+
+ipcMain.on("save-setting", (event, arg) => {
+    config = new Config(arg)
+    config.saveConfig()
 })
 
 app.on('ready', createWindow)
