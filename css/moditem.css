@@ -15,34 +15,3 @@
     background-color: #FFFFFF;
 }
 
-.modbutton {
-    width: 70px;
-    float: right;
-    margin: 6px 10px 6px 0px;
-    padding: 2px 6px 2px 6px;
-    color: #FFFFFF;
-    background: #FB7299;
-    text-align: center;
-    border-radius: 4px;
-    transition-duration: 0.3s;
-}
-
-.modbutton::before {
-    content: "安装"
-}
-
-.modbutton.installed {
-    background: #999999;
-}
-
-.modbutton.installed::before {
-    content: "已安装"
-}
-
-.modbutton.installed:hover {
-    background: #C0C0C0;
-}
-
-.modbutton.installed:hover::before {
-    content: "卸载"
-}

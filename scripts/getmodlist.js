@@ -69,8 +69,6 @@ function readModInfo(name, modFile) {
                                             mkDirByPathSync(path.join(infoPath, dir))
                                         }
                                         fs.writeFileSync(path.join(infoPath, relativePath), filecontent)
-                                        let page = buildInfoPage(name, pageNode.cloneNode(true))
-                                        mainPage.appendChild(page)
                                         
                                     })
                                 }
@@ -78,6 +76,8 @@ function readModInfo(name, modFile) {
                             
                         }
                     })
+                    let page = buildInfoPage(name, pageNode.cloneNode(true))
+                    mainPage.appendChild(page)
                 },
                     function (reason) {
                         console.log("read zip failed " + reason)
@@ -92,7 +92,7 @@ function resetSelectedMod() {
       section.classList.remove('selected')
     })
 
-    const pages = document.querySelectorAll('.info_section.shown')
+    const pages = document.querySelectorAll('.info_page.shown')
     pages.forEach((page) => {
         page.classList.remove('shown')
     })

@@ -1,12 +1,97 @@
-.mod_page {
-    background-color: white;
-}
-
 .info_page {
+    height: 100%;
+    background-color: white;
     transition-duration: 0.3s;
-    visibility: hidden;
+    display: none;
+    overflow: auto;
 }
 
 .info_page.shown {
-    visibility: visible;
+    display: block;
+}
+
+.info_section {
+    height: 120px;
+    position: relative;
+    overflow: auto;
+    border-bottom: 1px dotted #999999;
+}
+
+.info {
+    float: left;
+    position: relative;
+    margin-left: 10px;
+    top: 50%;
+    transform: translate(0,-50%);
+}
+
+.icon {
+    width: 80px;
+    height: 80px;
+    float: left;
+    position: relative;
+    margin-left: 10px;
+    top: 50%;
+    transform: translate(0,-50%);
+}
+
+.title {
+    margin: 0;
+    font-size: 1.5em;
+}
+
+.author {
+    margin: 8px 0 0 0;
+    font-size: 0.75em;
+    color: #999999;
+}
+
+.tags {
+    margin: 4px 0 0 0;
+    font-size: 0.75em;
+    color: #999999;
+}
+
+.modbutton {
+    width: 70px;
+    height: 30px;
+    line-height: 30px;
+    margin: 0 15px 0 0;
+    padding: 2px 6px 2px 6px;
+    color: #FFFFFF;
+    background: #FB7299;
+    text-align: center;
+    border-radius: 4px;
+    transition-duration: 0.3s;
+    position: absolute;
+    top: 50%;
+    right: 0;
+    transform: translate(0,-50%);
+}
+
+.modbutton::before {
+    content: "安装"
+}
+
+.modbutton.installed {
+    background: #999999;
+}
+
+.modbutton.installed::before {
+    content: "已安装"
+}
+
+.modbutton.installed:hover {
+    background: #C0C0C0;
+}
+
+.modbutton.installed:hover::before {
+    content: "卸载"
+}
+
+.readme_section {
+    height: calc(100% - 121px);
+    position: relative;
+    overflow-x: hidden;
+    overflow-y: auto;
 }

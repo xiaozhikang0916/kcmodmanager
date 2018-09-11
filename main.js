@@ -4,7 +4,7 @@ let win
 let setting
 
 function createWindow() {
-    win = new BrowserWindow({ width: 800, height: 600 })
+    win = new BrowserWindow({ width: 1200, height: 600 })
     win.loadFile('index.html')
     buildMenu()
     win.on('closed', () => {

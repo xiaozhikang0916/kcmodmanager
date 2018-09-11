@@ -1,16 +1,20 @@
 function buildInfoPage(modName, template) {
-    var modInfo = JSON.parse(fs.readFileSync(path.join(getModPath(), ".modinfo", modName, "info.json"), 'utf8'))
     var icon = template.querySelector(".icon")
     var title = template.querySelector(".title")
     var author = template.querySelector(".author")
     var tags = template.querySelector(".tags")
     var button = template.querySelector(".modbutton")
-    icon.src = path.join(getModPath(), ".modinfo", modName, "icon")
-    title.textContent = modInfo.name
-    author.textContent = modInfo.author
-    tags.textContent = modInfo.tags.join(',')
+    if (fs.existsSync(path.join(getModPath(), ".modinfo", modName, "info.json"))) {
+        var modInfo = JSON.parse(fs.readFileSync(path.join(getModPath(), ".modinfo", modName, "info.json"), 'utf8'))
+        icon.src = path.join(getModPath(), ".modinfo", modName, "icon.png")
+        title.textContent = modInfo.name
+        author.textContent = modInfo.author
+        tags.textContent = modInfo.tags.join(',')
+    } else {
+        title.textContent = modName
+    }
     generateButton(button, modName, false)
-    template.id = `mod_info_${modName}`
+    template.firstElementChild.id = `mod_info_${modName}`
     return template
 }
 
