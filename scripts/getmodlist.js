@@ -43,13 +43,6 @@ function addModToList(modFile) {
     content.append(element)
 }
 
-const INFO_LIST = [
-    /readme\.md/,
-    /info\.json/,
-    /icon\.*/,
-    /readme\//
-]
-
 function readModInfo(name, modFile) {
     const infoPath = path.join(getModPath(), ".modinfo", name)
     fs.readFile(modFile, function (err, data) {
@@ -60,20 +53,18 @@ function readModInfo(name, modFile) {
             zip.loadAsync(data)
                 .then(function (file) {
                     file.forEach(function (relativePath, entry) {
-                        if (!relativePath.startsWith("kcs2") && !entry.dir) {
-                            INFO_LIST.forEach((item) => {
-                                if (relativePath.search(item) > -1) {
-                                    entry.async('nodebuffer').then(function (filecontent) {
-                                        var dir = path.parse(relativePath).dir
-                                        if (!fs.existsSync(dir)) {
-                                            mkDirByPathSync(path.join(infoPath, dir))
-                                        }
-                                        fs.writeFileSync(path.join(infoPath, relativePath), filecontent)
-                                        
-                                    })
-                                }
-                            })
-                            
+                        if (!entry.dir) {
+                            if (!isInfoFile(relativePath)) {
+                                entry.async('nodebuffer').then(function (filecontent) {
+                                    var dir = path.parse(relativePath).dir
+                                    if (!fs.existsSync(dir)) {
+                                        mkDirByPathSync(path.join(infoPath, dir))
+                                    }
+                                    fs.writeFileSync(path.join(infoPath, relativePath), filecontent)
+
+                                })
+                            }
+
                         }
                     })
                     let page = buildInfoPage(name, pageNode.cloneNode(true))
@@ -89,7 +80,7 @@ function readModInfo(name, modFile) {
 function resetSelectedMod() {
     const sections = document.querySelectorAll('.moditem.selected')
     sections.forEach((section) => {
-      section.classList.remove('selected')
+        section.classList.remove('selected')
     })
 
     const pages = document.querySelectorAll('.info_page.shown')

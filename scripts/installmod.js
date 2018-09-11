@@ -3,12 +3,14 @@ fs = require("fs")
 path = require("path")
 
 function installMod(modName) {
-    extractZip(modName, getExtractPath())
+    var zipName = modName + '.zip'
+    extractZip(zipName, getExtractPath())
     saveInstallMod(modName)
 }
 
 function uninstallMod(modName) {
-    deleteFileFromZip(modName, getExtractPath())
+    var zipName = modName + '.zip'
+    deleteFileFromZip(zipName, getExtractPath())
     deleteInstalledMod(modName)
 }
 
@@ -21,7 +23,7 @@ function extractZip(zipFile, outputPath) {
             zip.loadAsync(data)
                 .then(function (file) {
                     file.forEach(function (relativePath, entry) {
-                        if (!entry.dir) {
+                        if (!entry.dir && !isInfoFile(relativePath)) {
                             entry.async('nodebuffer').then(function (filecontent) {
                                 var dir = path.parse(entry.name).dir
                                 if (!fs.existsSync(path.join(outputPath, dir))) {

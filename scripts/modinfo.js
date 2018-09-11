@@ -1,5 +1,12 @@
 const marked = require('marked')
 
+const INFO_LIST = [
+    /readme\.md/,
+    /info\.json/,
+    /icon\.*/,
+    /readme\//
+]
+
 function buildInfoPage(modName, template) {
     var icon = template.querySelector(".icon")
     var title = template.querySelector(".title")
@@ -24,7 +31,7 @@ function buildInfoPage(modName, template) {
         title.textContent = modName
         icon.style.display = "none"
     }
-    generateButton(button, modName, false)
+    generateButton(button, modName, isModInstalled(modName))
     template.firstElementChild.id = `mod_info_${modName}`
     return template
 }
@@ -46,4 +53,14 @@ function generateButton(element, modfile, installed) {
         }
     })
     return element
+}
+
+function isInfoFile(file) {
+    if (file.startsWith("kcs2")) {
+        return false
+    } else {
+        return INFO_LIST.some((name) => {
+            return file.search(name) > -1
+        })
+    }
 }
