@@ -1,0 +1,33 @@
+language: node_js
+
+node_js:
+- '10'
+
+os: osx
+
+cache:
+  directories:
+  - '$HOME/.electron'
+  - "node_modules"
+
+branches:
+  only:
+  - master
+
+install:
+- npm install -g npm
+- npm install
+- npm update
+
+script:
+- npm run build
+
+deploy:
+  provider: releases
+  api_key: '$GITHUB_TOKEN'
+  file_glob: true
+  file: 'release-builds/KCModManager-*-mac.zip'
+  bucket: "kcmodmanager"
+  skip_cleanup: true
+  on:
+    tags: true

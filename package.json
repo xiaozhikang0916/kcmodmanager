@@ -6,8 +6,10 @@
   "scripts": {
     "start": "electron .",
     "test": "electron . --debug-brk=9223",
-    "build": "electron-builder",
-    "build-both": "electron-builder -mw"
+    "build": "electron-builder --publish=never",
+    "build-both": "electron-builder -mw --publish=never",
+    "build-win": "electron-builder -w --publish=never",
+    "build-mac": "electron-builder -m --publish=never"
   },
   "repository": {
     "type": "git",
@@ -29,16 +31,32 @@
   },
   "build": {
     "productName": "KCModManager",
-    "appId": "org.xzk.kcmodmanager",
-    "asar": false,
+    "appId": "org.kiritsugupapa.kcmodmanager",
+    "asar": true,
     "directories": {
       "output": "release-builds"
     },
     "mac": {
-      "files": ["!modconfig.json", "!instruction/*", "!release-builds", "!readme*", "!.vscode/*"]
+      "files": [
+        "!modconfig.json",
+        "!instruction/*",
+        "!release-builds",
+        "!readme*",
+        "!.vscode/*"
+      ]
     },
     "win": {
-      "files": ["!modconfig.json", "!instruction/*", "!release-builds", "!readme*", "!.vscode/*"]
+      "files": [
+        "!modconfig.json",
+        "!instruction/*",
+        "!release-builds",
+        "!readme*",
+        "!.vscode/*"
+      ],
+      "target": [
+        "zip",
+        "portable"
+      ]
     }
   }
 }

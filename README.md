@@ -1,5 +1,8 @@
 # KCModManager
 
+[![Build Status](https://travis-ci.org/xiaozhikang0916/kcmodmanager.svg?branch=master)](https://travis-ci.org/xiaozhikang0916/kcmodmanager)
+[![Build status](https://ci.appveyor.com/api/projects/status/g9nf98ljeai65vgf/branch/master?svg=true)](https://ci.appveyor.com/project/xiaozhikang0916/kcmodmanager/branch/master)
+
 A tool to manage Mods package of 艦隊Collection(Kancolle)
 
 It is only to manage you mod files, does not provide local-cache feature of the game.

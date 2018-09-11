@@ -1,5 +1,8 @@
 # KCModManager
 
+[![Build Status](https://travis-ci.org/xiaozhikang0916/kcmodmanager.svg?branch=master)](https://travis-ci.org/xiaozhikang0916/kcmodmanager)
+[![Build status](https://ci.appveyor.com/api/projects/status/g9nf98ljeai65vgf/branch/master?svg=true)](https://ci.appveyor.com/project/xiaozhikang0916/kcmodmanager/branch/master)
+
 一款管理艦隊Collection(舰c)魔改mod的工具。
 
 此工具仅用于管理mod文件，不包含本地缓存功能。

@@ -1,0 +1,37 @@
+image: Visual Studio 2017
+
+platform:
+  - x64
+
+cache:
+  - node_modules
+  - '%USERPROFILE%\.electron'
+
+branches:
+  only:
+    - master
+
+init:
+  - git config --global core.autocrlf input
+  - npm i -g npm
+
+install:
+  - ps: Install-Product node 8 x64
+  - npm install
+  - npm update
+
+build_script:
+  - npm run build
+
+test: off
+
+artifacts:
+  - path: 'release-builds\KCModManager-*-win.zip'
+    name: 'zip'
+
+deploy:
+  - provider: Environment
+    name: kcmodmanager
+    artifact: 'zip'
+    on:
+      appveyor_repo_tag: true
