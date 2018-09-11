@@ -6,6 +6,8 @@ It is only to manage you mod files, does not provide local-cache feature of the 
 
 [中文简介](./README-ch.md)
 
+![screenshot](./instruction/screenshot.png)
+
 ## Build
 
 Developed in [Electron](https://electronjs.org/) 2.0.8
@@ -24,27 +26,67 @@ npm install
 npm start
 ```
 
-## How to use
+## Manage your zip package
 
-Package your mod files in zip following:
+Package your mod files in zip following rules:
 
 * Keep the architacture of what it is in cache
 * Directory `kcs2` should be in the root of you zip
 * Keep the original name of modified resource file
+
+Also, you can add some description files, which will be resolved by this app:
+
+* An `icon.png` file, will be resolved as `80px*80px`
+* An `info.json` file containing basic info of your mod, the content may have:
+  * `title` a string
+  * `author` a string
+  * `tags` list of strings
+
+A valid `info.json` file:
+
+```json
+{
+    "name": "A KanColle Mod",
+    "author": "KCModManager",
+    "tags": [
+        "mod",
+        "KanColle",
+        "Tanaka"
+    ]
+}
+```
+
+Informations from previous two files will be displayed in the top of info-panel
+
+Additionally, you can put a `readme.md` file with it's referencing content in folder `readme` using relative path in the root of your zip (typically, some pic resources), such content will display in the bottom of info-panel.
 
 It should look like:
 
 ```
 your_mod.zip
     |
-    --kcs2
+    - icon.png
+    |
+    - info.json
+    |
+    - readme.md
+    |
+    - readme
+    |   |
+    |   - screenshot.png
+    |
+    -- kcs2
         |
-        --img
+        -- img
             |
             -- ...
             |
             -- modified_file.png
 ```
+
+You can get an example zip file in [./instruction/example.zip](./instruction/example.zip)
+
+## How to use
 
 Open this app, complete the setting window if it is first time to start.
 
