@@ -1,7 +1,7 @@
 {
   "name": "kcmodmanager",
-  "version": "0.0.1",
-  "description": "",
+  "version": "0.0.2",
+  "description": "A tool to manage Mods package of Kancolle",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
@@ -10,7 +10,15 @@
     "package-win": "electron-packager . --overwrite --platform=win32 --arch=ia32 --prune=true --out=release-builds --ignore=\"vscode|modconfig|extract|instruction\" --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName=\"KCModManager\"",
     "package-linux": "electron-packager . --overwrite --platform=linux --arch=x64 --prune=true --out=release-builds --ignore=\"vscode|modconfig|extract|instruction\""
   },
-  "author": "",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xiaozhikang0916/kcmodmanager.git"
+  },
+  "author": "xiaozhikang0916",
+  "bugs": {
+    "url": "https://github.com/xiaozhikang0916/kcmodmanager/issues"
+  },
+  "homepage": "https://github.com/xiaozhikang0916/kcmodmanager#readme",
   "license": "MIT",
   "dependencies": {
     "jszip": "^3.1.5",
