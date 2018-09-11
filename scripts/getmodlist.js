@@ -54,7 +54,7 @@ function readModInfo(name, modFile) {
                 .then(function (file) {
                     file.forEach(function (relativePath, entry) {
                         if (!entry.dir) {
-                            if (!isInfoFile(relativePath)) {
+                            if (isInfoFile(relativePath)) {
                                 entry.async('nodebuffer').then(function (filecontent) {
                                     var dir = path.parse(relativePath).dir
                                     if (!fs.existsSync(dir)) {
