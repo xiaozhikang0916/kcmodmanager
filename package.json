@@ -6,9 +6,8 @@
   "scripts": {
     "start": "electron .",
     "test": "electron . --debug-brk=9223",
-    "package-mac": "electron-packager . --overwrite --platform=darwin --arch=x64 --prune=true --out=release-builds --ignore=\"vscode|modconfig|extract|instruction\"",
-    "package-win": "electron-packager . --overwrite --platform=win32 --arch=ia32 --prune=true --out=release-builds --ignore=\"vscode|modconfig|extract|instruction\" --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName=\"KCModManager\"",
-    "package-linux": "electron-packager . --overwrite --platform=linux --arch=x64 --prune=true --out=release-builds --ignore=\"vscode|modconfig|extract|instruction\""
+    "build": "electron-builder",
+    "build-both": "electron-builder -mw"
   },
   "repository": {
     "type": "git",
@@ -26,6 +25,20 @@
   },
   "devDependencies": {
     "electron": "^2.0.8",
-    "electron-packager": "^12.1.0"
+    "electron-builder": "^20.28.4"
+  },
+  "build": {
+    "productName": "KCModManager",
+    "appId": "org.xzk.kcmodmanager",
+    "asar": false,
+    "directories": {
+      "output": "release-builds"
+    },
+    "mac": {
+      "files": ["!modconfig.json", "!instruction/*", "!release-builds", "!readme*", "!.vscode/*"]
+    },
+    "win": {
+      "files": ["!modconfig.json", "!instruction/*", "!release-builds", "!readme*", "!.vscode/*"]
+    }
   }
 }
