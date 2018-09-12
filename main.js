@@ -43,10 +43,6 @@ function buildMenu() {
                     accelerator: "F2"
                 },
                 {
-                    label: "设置",
-                    click: showSetting
-                },
-                {
                     role: 'quit',
                     accelerator: "Cmd+Q"
                 }
@@ -61,10 +57,6 @@ function buildMenu() {
                     label: "打开开发者工具",
                     click: showDevTool,
                     accelerator: "F2"
-                },
-                {
-                    label: "设置",
-                    click: showSetting
                 },
                 {
                     role: 'close'
