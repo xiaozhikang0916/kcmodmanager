@@ -68,14 +68,16 @@ function buildMenu() {
 }
 
 function showSetting(menuItem, browserWindow, event) {
-    setting = new BrowserWindow({ width: 500, height: 300 })
-    setting.loadFile('settings.html')
-    setting.on('closed', () => {
-        setting = null
-        if (win) {
-            win.reload()
-        }
-    })
+    if (setting == null) {
+        setting = new BrowserWindow({ width: 500, height: 300 })
+        setting.loadFile('settings.html')
+        setting.on('closed', () => {
+            setting = null
+            if (win) {
+                win.reload()
+            }
+        })
+    }
 }
 
 function showDevTool(menuItem, browserWindow, event) {
