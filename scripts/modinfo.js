@@ -8,9 +8,9 @@ const INFO_LIST = [
 ]
 
 function buildInfoPage(modName, template) {
-    const infoJsonPath = path.join(config.getModPath(), ".modinfo", modName, "info.json")
-    const iconPath = path.join(config.getModPath(), ".modinfo", modName, "icon.png")
-    const readmePath = path.join(config.getModPath(), ".modinfo", modName, "readme.md")
+    const infoJsonPath = path.join(config.getModPath(), modName, "info.json")
+    const iconPath = path.join(config.getModPath(), modName, "icon.png")
+    const readmePath = path.join(config.getModPath(), modName, "readme.md")
     var icon = template.querySelector(".icon")
     var title = template.querySelector(".title")
     var author = template.querySelector(".author")
@@ -26,7 +26,7 @@ function buildInfoPage(modName, template) {
         template.querySelector(".readme_section").innerHTML = marked.parse(
             fs.readFileSync(readmePath, 'utf8'),
             {
-                baseUrl: path.join(config.getModPath(), ".modinfo", modName, './'),
+                baseUrl: path.join(config.getModPath(), modName, './'),
                 gfm: true
             }
         )

@@ -98,17 +98,17 @@ class Config {
     }
 
     formatFileName(originName, relativePath = "") {
-        var originPath = path.join(relativePath, originName)
-        var name = path.basename(originPath)
+        
+        var name = path.basename(originName)
         var extIndex = name.lastIndexOf('.')
         if (extIndex > 0) {
             var base = name.substring(0, extIndex)
             var ext = name.substring(extIndex + 1, name.length)
 
             var nname = this.getNameFormat().replace("\{name\}", base).replace("\{ext\}", ext)
-            return path.join(originPath.substring(0, originPath.length - name.length), nname)
+            return path.join(relativePath, nname)
         } else {
-            return originPath
+            return path.join(relativePath, name)
         }
     }
 

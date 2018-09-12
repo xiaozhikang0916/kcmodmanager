@@ -1,68 +1,51 @@
-jszip = require("jszip")
 fs = require("fs")
 path = require("path")
 
 function installMod(modName) {
-    extractZip(modName, config.getExtractPath())
-}
-
-function uninstallMod(modName) {
-    deleteFileFromZip(modName, config.getExtractPath())
-}
-
-function extractZip(modName, outputPath) {
-    var zipFile = modName + '.zip'
-    zip.loadAsync(fs.readFileSync(path.join(config.getModPath(), zipFile)))
-        .then(function (file) {
-            file.forEach(function (relativePath, entry) {
-                if (!entry.dir && !isInfoFile(relativePath)) {
-                    entry.async('nodebuffer').then(function (filecontent) {
-                        var dir = path.parse(entry.name).dir
+    var outputPath = config.getExtractPath()
+    walkDir(path.join(config.getModPath(), modName), function (err, result) {
+        if (err) {
+            console.err(`Fail to install ${modName} : ${err}`)
+        } else {
+            var conflicts = checkFileConflict(result, outputPath)
+            if (conflicts && conflicts.length > 0) {
+                notifyConflict(conflicts)
+            } else {
+                result.forEach((file) => {
+                    var rPath = path.relative(file, config.getModPath())
+                    if (!isInfoFile(rPath)) {
+                        var dir = path.parse(rPath).dir
                         if (!fs.existsSync(path.join(outputPath, dir))) {
                             mkDirByPathSync(path.join(outputPath, dir))
                         }
-                        fs.writeFileSync(config.formatFileName(entry.name, outputPath), filecontent)
-                    })
-                }
-            })
-            config.saveInstallMod(modName)
-            ipcRenderer.sendSync("save-setting", config)
-        },
-            function (reason) {
-                console.log("read zip failed " + reason)
-            })
-
+                        fs.copyFileSync(path.join(config.getModPath(), modName, rPath), config.formatFileName(rPath, outputPath))
+                    }
+                })
+                config.saveInstallMod(modName)
+                ipcRenderer.sendSync("save-setting", config)
+            }
+        }
+    })
 }
 
-function deleteFileFromZip(modName, outputPath) {
-    var zipFile = modName + '.zip'
-    fs.readFile(path.join(config.getModPath(), zipFile), function (err, data) {
+function uninstallMod(modName) {
+    var outputPath = config.getExtractPath()
+    walkDir(path.join(config.getModPath(), modName), function (err, result) {
         if (err) {
-            console.log("Read zip failed")
-        }
-        else {
-            zip.loadAsync(data)
-                .then(function (file) {
-                    file.forEach(function (relativePath, entry) {
-                        if (!entry.dir) {
-                            let modFile = config.formatFileName(entry.name, outputPath)
-                            fs.stat(modFile, function (err, stat) {
-                                if (err) {
-                                    return console.error(err);
-                                }
-
-                                fs.unlink(modFile, function (err) {
-                                    if (err) return console.log(err);
-                                });
-                            })
-                        }
-                    })
-                    config.deleteInstalledMod(modName)
-                    ipcRenderer.sendSync("save-setting", config)
-                },
-                    function (reason) {
-                        console.log("read zip failed " + reason)
-                    })
+            console.err(`Fail to uninstall ${modName} : ${err}`)
+        } else {
+            result.forEach((file) => {
+                var rPath = path.relative(file, config.getModPath())
+                if (!isInfoFile(rPath)) {
+                    var dir = path.parse(rPath).dir
+                    if (!fs.existsSync(path.join(outputPath, dir))) {
+                        mkDirByPathSync(path.join(outputPath, dir))
+                    }
+                    fs.unlink(config.formatFileName(rPath, outputPath))
+                }
+            })
+            config.deleteInstalledMod(modName)
+            ipcRenderer.sendSync("save-setting", config)
         }
     })
 }
@@ -96,6 +79,42 @@ function mkDirByPathSync(targetDir, { isRelativeToScript = true } = {}) {
     }, initDir);
 }
 
+function walkDir(dir, done) {
+    var results = [];
+    fs.readdir(dir, function (err, list) {
+        if (err) return done(err);
+        var pending = list.length;
+        if (!pending) return done(null, results);
+        list.forEach(function (file) {
+            file = path.resolve(dir, file);
+            fs.stat(file, function (err, stat) {
+                if (stat && stat.isDirectory()) {
+                    walkDir(file, function (err, res) {
+                        results = results.concat(res);
+                        if (!--pending) done(null, results);
+                    });
+                } else {
+                    results.push(file);
+                    if (!--pending) done(null, results);
+                }
+            });
+        });
+    });
+}
+
+function checkFileConflict(fileList, outputPath) {
+    var results = [];
+    fileList.forEach((file) => {
+        if (fs.existsSync(config.formatFileName(file, outputPath))) {
+            results.push(file)
+        }
+    })
+    return results
+}
+
+function notifyConflict(conflicts) {
+
+}
 
 window.onbeforeunload = function () {
     ipcRenderer.sendSync("save-setting", config)

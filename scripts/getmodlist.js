@@ -1,4 +1,3 @@
-zip = require('jszip')
 fs = require('fs')
 path = require('path')
 var querystring = require("querystring");
@@ -11,12 +10,7 @@ const config = new Config(ipcRenderer.sendSync('get-setting'))
 
 function addModToList(modFile) {
     let element = document.createElement("div")
-    let basename = path.basename(modFile)
-    var index = basename.lastIndexOf('.')
-    let name = basename
-    if (index > 0) {
-        name = basename.substring(0, index)
-    }
+    let name = path.basename(modFile)
     element.id = name
     element.classList.add("moditem")
     let installed = config.isModInstalled(name)
@@ -33,64 +27,10 @@ function addModToList(modFile) {
     })
     let text = document.createElement("p")
     text.classList.add("modname")
-    /* TODO 
-    read name from extracted info file
-    but new it is an async function to extract zip file
-    it would make ui flashing*/
     text.textContent = name
     element.appendChild(text)
-    // element.appendChild(generateButton(name, installed))
-    readModInfo(name, modFile)
+    mainPage.appendChild(buildInfoPage(name, pageNode.cloneNode(true)))
     content.append(element)
-}
-
-function readModInfo(name, modFile) {
-    function generatePage(result) {
-        if (result) {
-            let page = buildInfoPage(name, pageNode.cloneNode(true))
-            mainPage.appendChild(page)
-        }
-    }
-    const infoPath = path.join(config.getModPath(), ".modinfo", name)
-    var fileCount = 0;
-    var extractCount = 0;
-    fs.readFile(modFile, function (err, data) {
-        if (err) {
-            console.log("Read zip failed")
-        }
-        else {
-            zip.loadAsync(data)
-                .then(function (file) {
-                    file.forEach(function (relativePath, entry) {
-                        if (!entry.dir) {
-                            if (isInfoFile(relativePath)) {
-                                fileCount += 1
-                                var dir = path.parse(relativePath).dir
-                                if (!fs.existsSync(dir)) {
-                                    mkDirByPathSync(path.join(infoPath, dir))
-                                }
-                                entry.nodeStream()
-                                    .pipe(fs.createWriteStream(path.join(infoPath, relativePath), 'utf8'))
-                                    .on('finish', function () {
-                                        extractCount += 1
-                                        if (extractCount == fileCount) {
-                                            generatePage(extractCount == fileCount)
-                                        }
-                                    })
-                            }
-                        }
-                    })
-                },
-                    function (reason) {
-                        console.log("read zip failed " + reason)
-                    }
-                ).then(() => {
-                    if (fileCount == 0) {
-                        generatePage(true)
-                    }
-                })
-        }
-    })
 }
 
 function resetSelectedMod() {
@@ -123,13 +63,16 @@ function loadMods() {
     fs.readdir(config.getModPath(), function (err, fileList) {
         if (err) return err;
         fileList.forEach(function (file) {
-            if (file.endsWith(".zip")) {
-                file = path.resolve(config.getModPath(), file)
-                fs.stat(file, function (err, stat) {
-                    if (stat && stat.isFile()) {
+            var currentPath = path.resolve(config.getModPath(), file)
+            if (!file.startsWith('.') && fs.statSync(currentPath).isDirectory()) {
+                try {
+                    var kcs = fs.statSync(path.resolve(currentPath, "kcs2"))
+                    if (kcs && kcs.isDirectory()) {
                         addModToList(file)
                     }
-                })
+                } catch (ENONET) {
+                    console.error(`${file} is not valid mod package`)
+                }
             }
         })
     })
