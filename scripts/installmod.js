@@ -3,45 +3,39 @@ fs = require("fs")
 path = require("path")
 
 function installMod(modName) {
-    var zipName = modName + '.zip'
-    extractZip(zipName, config.getExtractPath())
-    saveInstallMod(modName)
+    extractZip(modName, config.getExtractPath())
 }
 
 function uninstallMod(modName) {
-    var zipName = modName + '.zip'
-    deleteFileFromZip(zipName, config.getExtractPath())
-    deleteInstalledMod(modName)
+    deleteFileFromZip(modName, config.getExtractPath())
 }
 
-function extractZip(zipFile, outputPath) {
-    fs.readFile(path.join(config.getModPath(), zipFile), function (err, data) {
-        if (err) {
-            console.log("Read zip failed")
-        }
-        else {
-            zip.loadAsync(data)
-                .then(function (file) {
-                    file.forEach(function (relativePath, entry) {
-                        if (!entry.dir && !isInfoFile(relativePath)) {
-                            entry.async('nodebuffer').then(function (filecontent) {
-                                var dir = path.parse(entry.name).dir
-                                if (!fs.existsSync(path.join(outputPath, dir))) {
-                                    mkDirByPathSync(path.join(outputPath, dir))
-                                }
-                                fs.writeFileSync(config.formatFileName(entry.name, outputPath), filecontent)
-                            })
+function extractZip(modName, outputPath) {
+    var zipFile = modName + '.zip'
+    zip.loadAsync(fs.readFileSync(path.join(config.getModPath(), zipFile)))
+        .then(function (file) {
+            file.forEach(function (relativePath, entry) {
+                if (!entry.dir && !isInfoFile(relativePath)) {
+                    entry.async('nodebuffer').then(function (filecontent) {
+                        var dir = path.parse(entry.name).dir
+                        if (!fs.existsSync(path.join(outputPath, dir))) {
+                            mkDirByPathSync(path.join(outputPath, dir))
                         }
+                        fs.writeFileSync(config.formatFileName(entry.name, outputPath), filecontent)
                     })
-                },
-                    function (reason) {
-                        console.log("read zip failed " + reason)
-                    })
-        }
-    })
+                }
+            })
+            config.saveInstallMod(modName)
+            ipcRenderer.sendSync("save-setting", config)
+        },
+            function (reason) {
+                console.log("read zip failed " + reason)
+            })
+
 }
 
-function deleteFileFromZip(zipFile, outputPath) {
+function deleteFileFromZip(modName, outputPath) {
+    var zipFile = modName + '.zip'
     fs.readFile(path.join(config.getModPath(), zipFile), function (err, data) {
         if (err) {
             console.log("Read zip failed")
@@ -63,6 +57,8 @@ function deleteFileFromZip(zipFile, outputPath) {
                             })
                         }
                     })
+                    config.deleteInstalledMod(modName)
+                    ipcRenderer.sendSync("save-setting", config)
                 },
                     function (reason) {
                         console.log("read zip failed " + reason)
@@ -98,4 +94,9 @@ function mkDirByPathSync(targetDir, { isRelativeToScript = true } = {}) {
 
         return curDir;
     }, initDir);
+}
+
+
+window.onbeforeunload = function () {
+    ipcRenderer.sendSync("save-setting", config)
 }

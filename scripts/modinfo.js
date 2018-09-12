@@ -51,7 +51,7 @@ function generateButton(element, modfile, installed) {
             uninstallMod(modfile)
             element.classList.remove("installed")
         } else {
-            config.installMod(modfile)
+            installMod(modfile)
             element.classList.add("installed")
         }
     })

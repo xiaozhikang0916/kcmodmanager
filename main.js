@@ -103,6 +103,7 @@ ipcMain.on("get-setting", (event, arg) => {
 ipcMain.on("save-setting", (event, arg) => {
     config = new Config(arg)
     config.saveConfig()
+    event.returnValue = true
 })
 
 app.on('ready', createWindow)

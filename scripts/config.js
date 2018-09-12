@@ -105,7 +105,7 @@ class Config {
             var base = name.substring(0, extIndex)
             var ext = name.substring(extIndex + 1, name.length)
 
-            var nname = getNameFormat().replace("\{name\}", base).replace("\{ext\}", ext)
+            var nname = this.getNameFormat().replace("\{name\}", base).replace("\{ext\}", ext)
             return path.join(originPath.substring(0, originPath.length - name.length), nname)
         } else {
             return originPath
@@ -128,11 +128,10 @@ class Config {
         }
         this.installed_mod.forEach(function (item, index, array) {
             if (item == modName) {
-                this.installed_mod.splice(index, 1)
+                array.splice(index, 1)
             }
         })
         this.installed_mod.push(modName)
-        saveConfig()
     }
 
     deleteInstalledMod(modName) {
@@ -142,11 +141,10 @@ class Config {
         let result = false
         this.installed_mod.forEach(function (item, index, array) {
             if (item == modName) {
-                this.installed_mod.splice(index, 1)
+                array.splice(index, 1)
                 result = true
             }
         })
-        saveConfig()
         return result;
     }
 }
