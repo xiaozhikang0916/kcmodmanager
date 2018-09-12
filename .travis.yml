@@ -24,6 +24,7 @@ deploy:
   provider: releases
   api_key: '$GITHUB_TOKEN'
   file_glob: true
+  draft: true
   file: 'release-builds/KCModManager-*-mac.zip'
   bucket: "kcmodmanager"
   skip_cleanup: true
