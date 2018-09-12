@@ -59,7 +59,8 @@ function buildMenu() {
             submenu: [
                 {
                     label: "打开开发者工具",
-                    click: showDevTool
+                    click: showDevTool,
+                    accelerator: "F2"
                 },
                 {
                     label: "设置",
