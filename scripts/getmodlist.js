@@ -45,7 +45,15 @@ function addModToList(modFile) {
 }
 
 function readModInfo(name, modFile) {
+    function generatePage(result) {
+        if (result) {
+            let page = buildInfoPage(name, pageNode.cloneNode(true))
+            mainPage.appendChild(page)
+        }
+    }
     const infoPath = path.join(config.getModPath(), ".modinfo", name)
+    var fileCount = 0;
+    var extractCount = 0;
     fs.readFile(modFile, function (err, data) {
         if (err) {
             console.log("Read zip failed")
@@ -56,24 +64,31 @@ function readModInfo(name, modFile) {
                     file.forEach(function (relativePath, entry) {
                         if (!entry.dir) {
                             if (isInfoFile(relativePath)) {
-                                entry.async('nodebuffer').then(function (filecontent) {
-                                    var dir = path.parse(relativePath).dir
-                                    if (!fs.existsSync(dir)) {
-                                        mkDirByPathSync(path.join(infoPath, dir))
-                                    }
-                                    fs.writeFileSync(path.join(infoPath, relativePath), filecontent)
-
-                                })
+                                fileCount += 1
+                                var dir = path.parse(relativePath).dir
+                                if (!fs.existsSync(dir)) {
+                                    mkDirByPathSync(path.join(infoPath, dir))
+                                }
+                                entry.nodeStream()
+                                    .pipe(fs.createWriteStream(path.join(infoPath, relativePath), 'utf8'))
+                                    .on('finish', function () {
+                                        extractCount += 1
+                                        if (extractCount == fileCount) {
+                                            generatePage(extractCount == fileCount)
+                                        }
+                                    })
                             }
-
                         }
                     })
-                    let page = buildInfoPage(name, pageNode.cloneNode(true))
-                    mainPage.appendChild(page)
                 },
                     function (reason) {
                         console.log("read zip failed " + reason)
-                    })
+                    }
+                ).then(() => {
+                    if (fileCount == 0) {
+                        generatePage(true)
+                    }
+                })
         }
     })
 }
