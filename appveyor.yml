@@ -7,10 +7,6 @@ cache:
   - node_modules
   - '%USERPROFILE%\.electron'
 
-branches:
-  only:
-    - master
-
 init:
   - git config --global core.autocrlf input
   - npm i -g npm

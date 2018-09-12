@@ -1,5 +1,7 @@
 language: node_js
 
+if: tag IS present
+
 node_js:
 - '10'
 
@@ -9,10 +11,6 @@ cache:
   directories:
   - '$HOME/.electron'
   - "node_modules"
-
-branches:
-  only:
-  - master
 
 install:
 - npm install -g npm
