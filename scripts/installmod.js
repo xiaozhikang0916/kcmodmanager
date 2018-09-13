@@ -1,5 +1,6 @@
 fs = require("fs")
 path = require("path")
+const { dialog } = require('electron').remote
 
 function installMod(modName) {
     var outputPath = config.getExtractPath()
@@ -8,25 +9,27 @@ function installMod(modName) {
             console.err(`Fail to install ${modName} : ${err}`)
             notifyInstalled(modName, false)
         } else {
-            var conflicts = checkFileConflict(result, outputPath)
+            var conflicts = checkFileConflict(modName, result, outputPath)
             if (conflicts && conflicts.length > 0) {
                 notifyConflict(conflicts)
-            }
-            result.forEach((file) => {
-                if (!isInfoFile(file)) {
-                    var rPath = path.relative(file, path.join(config.getModPath(), modName))
-                    rPath = path.join(file, rPath)
-                    rPath = file.substring(rPath.length, file.length)
-                    var dir = path.parse(rPath).dir
-                    if (!fs.existsSync(path.join(outputPath, dir))) {
-                        mkDirByPathSync(path.join(outputPath, dir))
+                notifyInstalled(modName, false)
+            } else {
+                result.forEach((file) => {
+                    if (!isInfoFile(file)) {
+                        var rPath = path.relative(file, path.join(config.getModPath(), modName))
+                        rPath = path.join(file, rPath)
+                        rPath = file.substring(rPath.length, file.length)
+                        var dir = path.parse(rPath).dir
+                        if (!fs.existsSync(path.join(outputPath, dir))) {
+                            mkDirByPathSync(path.join(outputPath, dir))
+                        }
+                        fs.copyFileSync(path.join(config.getModPath(), modName, rPath), config.formatFileName(rPath, outputPath))
                     }
-                    fs.copyFileSync(path.join(config.getModPath(), modName, rPath), config.formatFileName(rPath, outputPath))
-                }
-            })
-            config.saveInstallMod(modName)
-            ipcRenderer.sendSync("save-setting", config)
-            notifyInstalled(modName, true)
+                })
+                config.saveInstallMod(modName)
+                ipcRenderer.sendSync("save-setting", config)
+                notifyInstalled(modName, true)
+            }
         }
     })
 }
@@ -105,10 +108,13 @@ function walkDir(dir, done) {
     });
 }
 
-function checkFileConflict(fileList, outputPath) {
+function checkFileConflict(modName, fileList, outputPath) {
     var results = [];
     fileList.forEach((file) => {
-        if (fs.existsSync(config.formatFileName(file, outputPath))) {
+        var rPath = path.relative(file, path.join(config.getModPath(), modName))
+        rPath = path.join(file, rPath)
+        rPath = file.substring(rPath.length, file.length)
+        if (fs.existsSync(config.formatFileName(rPath, outputPath))) {
             results.push(file)
         }
     })
@@ -117,9 +123,12 @@ function checkFileConflict(fileList, outputPath) {
 
 function notifyConflict(conflicts) {
     console.error("Files from mod are overwriting existing mod resources!:")
+    var content = "当前安装的mod包里以下文件与现存魔改文件冲突，请自行删除：\n"
     conflicts.forEach((file) => {
         console.error(file)
+        content += `${file}\n`
     })
+    dialog.showErrorBox("文件冲突", content)
 }
 
 window.onbeforeunload = function () {
