@@ -1,9 +1,21 @@
 .setting_input {
     position: relative;
-    width: calc(100% - 150px);
+    width: calc(100% - 265px);
     float: right;
+    margin-right: 20px
+}
+
+#name_fmt_edit {
+    width: calc(100% - 170px);
 }
 
 .setting_item {
     padding: 5px 0px 5px 0px;
+}
+
+#output_path_edit_button, #mod_path_edit_button {
+    width: 75px;
+    margin-right: 20px;
+    position: relative;
+    float: right
 }
