@@ -6,6 +6,7 @@ function installMod(modName) {
     walkDir(path.join(config.getModPath(), modName), function (err, result) {
         if (err) {
             console.err(`Fail to install ${modName} : ${err}`)
+            notifyInstalled(modName, false)
         } else {
             var conflicts = checkFileConflict(result, outputPath)
             if (conflicts && conflicts.length > 0) {
@@ -25,6 +26,7 @@ function installMod(modName) {
             })
             config.saveInstallMod(modName)
             ipcRenderer.sendSync("save-setting", config)
+            notifyInstalled(modName, true)
         }
     })
 }
@@ -33,6 +35,7 @@ function uninstallMod(modName) {
     var outputPath = config.getExtractPath()
     walkDir(path.join(config.getModPath(), modName), function (err, result) {
         if (err) {
+            notifyUninstalled(modName, false)
             console.err(`Fail to uninstall ${modName} : ${err}`)
         } else {
             result.forEach((file) => {
@@ -45,6 +48,7 @@ function uninstallMod(modName) {
             })
             config.deleteInstalledMod(modName)
             ipcRenderer.sendSync("save-setting", config)
+            notifyUninstalled(modName, true)
         }
     })
 }

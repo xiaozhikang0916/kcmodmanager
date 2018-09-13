@@ -47,16 +47,34 @@ function generateButton(element, modfile, installed) {
     else {
         element.classList.remove("installed")
     }
+    element.id = `mod_button_${modfile}`
     element.addEventListener("click", function (e, ev) {
+        element.disabled = true
         if (config.isModInstalled(modfile)) {
             uninstallMod(modfile)
-            element.classList.remove("installed")
         } else {
             installMod(modfile)
-            element.classList.add("installed")
         }
     })
     return element
+}
+
+function notifyInstalled(modName, result) {
+    if (result) {
+        element.classList.add("installed")
+    }
+    notifyButton(modName, result)
+}
+
+function notifyUninstalled(modName, result) {
+    if (result) {
+        element.classList.remove("installed")
+    }
+    notifyButton(modName, result)
+}
+
+function notifyButton(modName, result) {
+    document.getElementById(`mod_button_${modName}`).disabled = false
 }
 
 function isInfoFile(file) {
