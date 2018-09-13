@@ -22,7 +22,6 @@
   "homepage": "https://github.com/xiaozhikang0916/kcmodmanager#readme",
   "license": "MIT",
   "dependencies": {
-    "jszip": "^3.1.5",
     "marked": "^0.5.0"
   },
   "devDependencies": {
