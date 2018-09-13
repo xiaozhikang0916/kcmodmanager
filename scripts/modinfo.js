@@ -61,14 +61,14 @@ function generateButton(element, modfile, installed) {
 
 function notifyInstalled(modName, result) {
     if (result) {
-        element.classList.add("installed")
+        document.getElementById(`mod_button_${modName}`).classList.add("installed")
     }
     notifyButton(modName, result)
 }
 
 function notifyUninstalled(modName, result) {
     if (result) {
-        element.classList.remove("installed")
+        document.getElementById(`mod_button_${modName}`).classList.remove("installed")
     }
     notifyButton(modName, result)
 }
