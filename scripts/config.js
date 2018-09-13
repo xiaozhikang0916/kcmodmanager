@@ -106,7 +106,7 @@ class Config {
             var ext = name.substring(extIndex + 1, name.length)
 
             var nname = this.getNameFormat().replace("\{name\}", base).replace("\{ext\}", ext)
-            return path.join(relativePath, nname)
+            return path.join(relativePath, path.parse(originName).dir, nname)
         } else {
             return path.join(relativePath, name)
         }

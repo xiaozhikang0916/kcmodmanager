@@ -12,8 +12,10 @@ function installMod(modName) {
                 notifyConflict(conflicts)
             } else {
                 result.forEach((file) => {
-                    var rPath = path.relative(file, config.getModPath())
-                    if (!isInfoFile(rPath)) {
+                    if (!isInfoFile(file)) {
+                        var rPath = path.relative(file, path.join(config.getModPath(), modName))
+                        rPath = path.join(file, rPath)
+                        rPath = file.substring(rPath.length, file.length)
                         var dir = path.parse(rPath).dir
                         if (!fs.existsSync(path.join(outputPath, dir))) {
                             mkDirByPathSync(path.join(outputPath, dir))
@@ -35,13 +37,11 @@ function uninstallMod(modName) {
             console.err(`Fail to uninstall ${modName} : ${err}`)
         } else {
             result.forEach((file) => {
-                var rPath = path.relative(file, config.getModPath())
+                var rPath = path.relative(file, path.join(config.getModPath(), modName))
+                rPath = path.join(file, rPath)
+                rPath = file.substring(rPath.length, file.length)
                 if (!isInfoFile(rPath)) {
-                    var dir = path.parse(rPath).dir
-                    if (!fs.existsSync(path.join(outputPath, dir))) {
-                        mkDirByPathSync(path.join(outputPath, dir))
-                    }
-                    fs.unlink(config.formatFileName(rPath, outputPath))
+                    fs.unlink(path.join(config.getModPath(), modName, rPath))
                 }
             })
             config.deleteInstalledMod(modName)
