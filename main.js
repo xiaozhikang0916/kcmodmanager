@@ -38,6 +38,10 @@ function buildMenu() {
             label: app.getName(),
             submenu: [
                 {
+                    role: 'reload',
+                    accelerator: 'F5'
+                },
+                {
                     label: "打开开发者工具",
                     click: showDevTool,
                     accelerator: "F2"
@@ -53,6 +57,10 @@ function buildMenu() {
         template.unshift({
             label: "菜单",
             submenu: [
+                {
+                    role: 'reload',
+                    accelerator: 'F5'
+                },
                 {
                     label: "打开开发者工具",
                     click: showDevTool,
