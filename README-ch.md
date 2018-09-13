@@ -28,12 +28,12 @@ npm install
 npm start
 ```
 
-## 组织你的zip文件
+## 组织你的魔改包
 
-将你的魔改mod文件按以下规则打包成zip:
+将你的魔改mod文件按以下规则组织成一个文件夹:
 
 * 保持在原缓存里的文件结构
-* `kcs2`文件夹应该位于zip文件的根目录下
+* `kcs2`文件夹应该位于文件夹的根目录下
 * 需要替换的资源文件要保持其原名
 
 你也可以添加一些描述文件，app会解析这些文件并且展示：
@@ -60,15 +60,15 @@ npm start
 
 以上两个文件的内容会被解析到信息面板的顶栏。
 
-除此以外，你还可以添加一个`readme.md`文件到你的zip根目录下。
+除此以外，你还可以添加一个`readme.md`文件到你的文件夹根目录下。
 这个md文件可以使用相对路径引用同在根目录下的`readme`文件夹里的内容（主要是图片）。
 
 `readme.md`的内容会被解析到信息面板的底栏。
 
-Zip文件的结构应该长这样:
+文件夹的结构应该长这样:
 
 ```
-your_mod.zip
+your_mod
     |
     - icon.png
     |
@@ -88,7 +88,7 @@ your_mod.zip
             |
             -- modified_file.png
 ```
-你可以在[./instruction/example.zip](./instruction/example.zip)找到一个示例zip包。
+你可以在[./instruction/example](./instruction/example)找到一个示例mod包。
 
 ## 如何使用
 
@@ -108,7 +108,7 @@ your_mod.zip
 
 * 将每个mod包修改的文件列表存入配置文件中
   * 处理多个mod修改同一个文件的情况
-* 支持读取zip包里的`readme`文件，展示mod包的介绍信息
+* <del>支持读取文件夹里的`readme`文件，展示mod包的介绍信息</del> 已完成
 * UI改进
 
 ## 开源协议

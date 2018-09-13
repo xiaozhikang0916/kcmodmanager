@@ -29,12 +29,12 @@ npm install
 npm start
 ```
 
-## Manage your zip package
+## Manage your mod package
 
-Package your mod files in zip following rules:
+Package your mod files in directory following rules:
 
 * Keep the architacture of what it is in cache
-* Directory `kcs2` should be in the root of you zip
+* Directory `kcs2` should be in the root of you directory
 * Keep the original name of modified resource file
 
 Also, you can add some description files, which will be resolved by this app:
@@ -61,12 +61,12 @@ A valid `info.json` file:
 
 Informations from previous two files will be displayed in the top of info-panel
 
-Additionally, you can put a `readme.md` file with it's referencing content in folder `readme` using relative path in the root of your zip (typically, some pic resources), such content will display in the bottom of info-panel.
+Additionally, you can put a `readme.md` file with it's referencing content in folder `readme` using relative path in the root of your directory (typically, some pic resources), such content will display in the bottom of info-panel.
 
 It should look like:
 
 ```
-your_mod.zip
+your_mod
     |
     - icon.png
     |
@@ -87,13 +87,13 @@ your_mod.zip
             -- modified_file.png
 ```
 
-You can get an example zip file in [./instruction/example.zip](./instruction/example.zip)
+You can get an example mod package in [./instruction/example](./instruction/example)
 
 ## How to use
 
 Open this app, complete the setting window if it is first time to start.
 
-* Path to your mod zip files
+* Path to your mod package directories
 * Path to your local game cache
 > `kcs2` should located in the root of your local game cache
 * Output format of resource files
@@ -105,7 +105,7 @@ Close setting window to save.
 
 * Save the modified files list to config of each mod package
   * Handle the situation if two mods are modifying the same resource file
-* Support a `README` file in zip to display some instruction
+* <del>Support a `README` file in package to display some instruction</del> done
 * Improve the UI
 
 ## LICENCE
