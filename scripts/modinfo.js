@@ -4,7 +4,8 @@ const INFO_LIST = [
     /readme\.md/,
     /info\.json/,
     /icon\.*/,
-    /readme[\\\/]/
+    /readme[\\\/]/,
+    /\.DS_Store/
 ]
 
 function buildInfoPage(modName, template) {

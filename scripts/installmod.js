@@ -10,22 +10,21 @@ function installMod(modName) {
             var conflicts = checkFileConflict(result, outputPath)
             if (conflicts && conflicts.length > 0) {
                 notifyConflict(conflicts)
-            } else {
-                result.forEach((file) => {
-                    if (!isInfoFile(file)) {
-                        var rPath = path.relative(file, path.join(config.getModPath(), modName))
-                        rPath = path.join(file, rPath)
-                        rPath = file.substring(rPath.length, file.length)
-                        var dir = path.parse(rPath).dir
-                        if (!fs.existsSync(path.join(outputPath, dir))) {
-                            mkDirByPathSync(path.join(outputPath, dir))
-                        }
-                        fs.copyFileSync(path.join(config.getModPath(), modName, rPath), config.formatFileName(rPath, outputPath))
-                    }
-                })
-                config.saveInstallMod(modName)
-                ipcRenderer.sendSync("save-setting", config)
             }
+            result.forEach((file) => {
+                if (!isInfoFile(file)) {
+                    var rPath = path.relative(file, path.join(config.getModPath(), modName))
+                    rPath = path.join(file, rPath)
+                    rPath = file.substring(rPath.length, file.length)
+                    var dir = path.parse(rPath).dir
+                    if (!fs.existsSync(path.join(outputPath, dir))) {
+                        mkDirByPathSync(path.join(outputPath, dir))
+                    }
+                    fs.copyFileSync(path.join(config.getModPath(), modName, rPath), config.formatFileName(rPath, outputPath))
+                }
+            })
+            config.saveInstallMod(modName)
+            ipcRenderer.sendSync("save-setting", config)
         }
     })
 }
@@ -37,11 +36,11 @@ function uninstallMod(modName) {
             console.err(`Fail to uninstall ${modName} : ${err}`)
         } else {
             result.forEach((file) => {
-                var rPath = path.relative(file, path.join(config.getModPath(), modName))
-                rPath = path.join(file, rPath)
-                rPath = file.substring(rPath.length, file.length)
-                if (!isInfoFile(rPath)) {
-                    fs.unlink(path.join(config.getModPath(), modName, rPath))
+                if (!isInfoFile(file)) {
+                    var rPath = path.relative(file, path.join(config.getModPath(), modName))
+                    rPath = path.join(file, rPath)
+                    rPath = file.substring(rPath.length, file.length)
+                    fs.unlink(config.formatFileName(rPath, outputPath))
                 }
             })
             config.deleteInstalledMod(modName)
@@ -113,7 +112,10 @@ function checkFileConflict(fileList, outputPath) {
 }
 
 function notifyConflict(conflicts) {
-
+    console.error("Files from mod are overwriting existing mod resources!:")
+    conflicts.forEach((file) => {
+        console.error(file)
+    })
 }
 
 window.onbeforeunload = function () {
