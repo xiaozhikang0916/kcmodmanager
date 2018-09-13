@@ -1,6 +1,6 @@
 {
   "name": "kcmodmanager",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "A tool to manage Mods package of Kancolle",
   "main": "main.js",
   "scripts": {
