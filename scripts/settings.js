@@ -33,10 +33,6 @@ nameFormat.oninput = function (ev) {
     config.setNameFormat(nameFormat.value)
 }
 
-window.onbeforeunload = function () {
-    ipcRenderer.sendSync("save-setting", config)
-}
-
 document.getElementById('mod_path_edit_button').addEventListener('click', (e, ev) => {
     dialog.showOpenDialog({ properties: ['openDirectory'], multiSelections: false }, (filePaths) => {
         modPath.value = filePaths[0]
@@ -49,4 +45,8 @@ document.getElementById('output_path_edit_button').addEventListener('click', (e,
         outputPath.value = filePaths[0]
         config.setExtractPath(outputPath.value)
     })
+})
+
+document.getElementById('save').addEventListener('click', (e, ev) => {
+    ipcRenderer.sendSync("save-setting", config)
 })

@@ -1,6 +1,5 @@
 fs = require('fs')
 path = require('path')
-var querystring = require("querystring");
 const { ipcRenderer } = require('electron')
 var content = document.getElementById("mod_list")
 var mainPage = document.getElementById("mod_info")
