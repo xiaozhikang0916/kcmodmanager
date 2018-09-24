@@ -98,7 +98,6 @@ class Config {
     }
 
     formatFileName(originName, relativePath = "") {
-        
         var name = path.basename(originName)
         var extIndex = name.lastIndexOf('.')
         if (extIndex > 0) {
@@ -110,6 +109,14 @@ class Config {
         } else {
             return path.join(relativePath, name)
         }
+    }
+
+    deformatName(name) {
+        const nameReg = this.name_format
+            .replace(new RegExp("\\.", 'g'), "\\.")
+            .replace("\{name\}", "\(\.+?\)")
+            .replace("\{ext\}", "\(\.+?\)")
+        return name.replace(new RegExp(nameReg), "$1.$2")
     }
 
     isModInstalled(modName) {

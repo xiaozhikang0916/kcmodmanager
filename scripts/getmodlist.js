@@ -1,6 +1,7 @@
 fs = require('fs')
 path = require('path')
-const { ipcRenderer } = require('electron')
+const { ipcRenderer, remote } = require('electron')
+const { Menu, MenuItem } = remote
 var content = document.getElementById("mod_list")
 var mainPage = document.getElementById("mod_info")
 const template = document.querySelector('template')
@@ -24,12 +25,38 @@ function addModToList(modFile) {
         let page = document.getElementById(`mod_info_${name}`)
         page.classList.add("shown")
     })
+    makeContextMenu(element)
     let text = document.createElement("p")
     text.classList.add("modname")
     text.textContent = name
     element.appendChild(text)
     mainPage.appendChild(buildInfoPage(name, pageNode.cloneNode(true)))
     content.append(element)
+}
+
+function makeContextMenu(element) {
+    let menu = new Menu()
+    menu.append(new MenuItem({
+        label: '格式化所有文件',
+        click() { formatToOriginName(element.id) }
+    }))
+    element.addEventListener('contextmenu', (e) => {
+        e.preventDefault()
+        menu.popup({ window: remote.getCurrentWindow() })
+    }, false)
+}
+
+function formatToOriginName(id) {
+    console.log(`Formatting file names of ${id}`)
+    dialog.showMessageBox(remote.getCurrentWindow(), {
+        type: 'info',
+        buttons: ["确认", "取消"],
+        message: `将${config.name_format}重命名为{name}.{ext}。\n实验功能，请注意备份你的mod文件`
+    }, (resp, checked) => {
+        if (resp == 0) {
+            renameModFile(id)
+        }
+    })
 }
 
 function resetSelectedMod() {

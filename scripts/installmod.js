@@ -56,6 +56,21 @@ function uninstallMod(modName) {
     })
 }
 
+function renameModFile(modName) {
+    var outputPath = config.getExtractPath()
+    walkDir(path.join(config.getModPath(), modName), function (err, result) {
+        if (err) {
+            console.err(`Fail to rename ${modName} : ${err}`)
+        } else {
+            result.forEach((file) => {
+                if (!isInfoFile(file)) {
+                    fs.renameSync(file, config.deformatName(file))
+                }
+            })
+        }
+    })
+}
+
 function mkDirByPathSync(targetDir, { isRelativeToScript = true } = {}) {
     const sep = path.sep;
     const initDir = path.isAbsolute(targetDir) ? sep : '';
