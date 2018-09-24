@@ -46,7 +46,12 @@ function uninstallMod(modName) {
                     var rPath = path.relative(file, path.join(config.getModPath(), modName))
                     rPath = path.join(file, rPath)
                     rPath = file.substring(rPath.length, file.length)
-                    fs.unlink(config.formatFileName(rPath, outputPath))
+                    let rFile = config.formatFileName(rPath, outputPath)
+                    if (config.generateChecksum(file) == config.generateChecksum(rFile)) {
+                        fs.unlink(rFile)
+                    } else {
+                        console.err(`MD5 of ${file} is not equals to ${rFile}, skip delete`)
+                    }
                 }
             })
             config.deleteInstalledMod(modName)

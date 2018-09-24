@@ -1,5 +1,6 @@
 fs = require("fs")
 path = require("path")
+crypto = require('crypto');
 const app = require('electron')
 
 class Config {
@@ -109,6 +110,14 @@ class Config {
         } else {
             return path.join(relativePath, name)
         }
+    }
+    
+    generateChecksum(file) {
+        var str = fs.readFileSync(file)
+        return crypto
+            .createHash('md5')
+            .update(str, 'utf8')
+            .digest('hex');
     }
 
     deformatName(name) {
