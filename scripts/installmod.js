@@ -145,7 +145,3 @@ function notifyConflict(conflicts) {
     })
     dialog.showErrorBox("文件冲突", content)
 }
-
-window.onbeforeunload = function () {
-    ipcRenderer.sendSync("save-setting", config)
-}
